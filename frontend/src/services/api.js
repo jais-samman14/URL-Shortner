@@ -4,7 +4,7 @@ const API_BASE_URL = process.env.REACT_APP_API_URL || "https://url-shortner-back
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000,
+  timeout: 6000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -27,12 +27,12 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (error.response) {
+    if (error.code === 'ECONNABORTED') {
+      error.message = 'Server is waking up, please try again in 10 seconds! ☕';
+    } else if (error.response) {
       console.error('API Error:', error.response.data);
     } else if (error.request) {
       console.error('Network Error:', error.request);
-    } else {
-      console.error('Error:', error.message);
     }
     return Promise.reject(error);
   }
