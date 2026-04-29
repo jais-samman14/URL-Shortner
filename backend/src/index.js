@@ -15,6 +15,10 @@ const limiter = rateLimit({
 });
 
 app.use('/api/shorten', limiter);
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ status: 'ok' });
+});
+
 app.use('/api', urlRoutes);
 
 
