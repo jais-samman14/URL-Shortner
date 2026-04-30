@@ -23,7 +23,7 @@ const shortenUrl = async (req, res) => {
 
         return res.status(201).json({
             original_url,
-            short_url: `http://localhost:8000/api/${short_code}`,
+            short_url: `${process.env.BASE_URL}/api/${short_code}`,
             short_code
         });
 
