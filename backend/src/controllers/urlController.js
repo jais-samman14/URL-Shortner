@@ -65,7 +65,7 @@ const redirectUrl = async (req, res) => {
         }
 
         // DB se mila toh Redis mein store karo
-        await redis.setEx(shortCode, 86400, rows[0].original_url);
+        await redis.set(shortCode, rows[0].original_url, { EX: 86400 });
 
         await db.execute(
             'UPDATE urls SET clicks = clicks + 1, last_accessed = NOW() WHERE short_code = ?',
