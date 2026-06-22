@@ -38,22 +38,22 @@ app.use('/api', urlRoutes);
 
 const PORT = process.env.PORT || 8000;
 
-async function startServer() {
+const server = app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}, but not ready yet`);
+});
+
+// Initialise DB and Redis
+(async function init() {
     try {
-        await checkDbConnection();
+        // Test DB connection with a simple query
+        await promisePool.query('SELECT 1');
         console.log('Database ready');
         await connectRedis();
-        // Redis connected
+        console.log('Redis ready');
         isReady = true;
-        console.log('Server is ready to accept traffic');
-
-        app.listen(PORT, () => {
-            console.log(`Server running on port ${PORT}`);
-        });
+        console.log('🚀 Server is now fully ready to accept traffic');
     } catch (err) {
-        console.error('Failed to initialise dependencies:', err);
-        process.exit(1);
+        console.error('Initialisation failed:', err);
+        server.close(() => process.exit(1));
     }
-}
-
-startServer();
+})();
