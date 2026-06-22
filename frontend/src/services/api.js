@@ -23,19 +23,25 @@ api.interceptors.request.use(
 
 // Response interceptor
 api.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  (error) => {
-    if (error.code === 'ECONNABORTED') {
-      error.message = 'Server is waking up, please try again in 10 seconds! ☕';
-    } else if (error.response) {
-      console.error('API Error:', error.response.data);
-    } else if (error.request) {
-      console.error('Network Error:', error.request);
+    (response) => response,
+    async (error) => {
+        const config = error.config;
+        // If it's a 503 and we haven't retried too many times
+        if (error.response?.status === 503 && !config._retry) {
+            config._retry = true;
+            // Wait 3 seconds then retry
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            return api(config);
+        }
+        if (error.code === 'ECONNABORTED') {
+            error.message = 'Server is waking up, please try again in 10 seconds! ☕';
+        } else if (error.response) {
+            console.error('API Error:', error.response.data);
+        } else if (error.request) {
+            console.error('Network Error:', error.request);
+        }
+        return Promise.reject(error);
     }
-    return Promise.reject(error);
-  }
 );
 
 export const shortenURL = async (longUrl, customAlias = '') => {

@@ -1,4 +1,4 @@
-const db = require('../config/db');
+const { promisePool : db} = require('../config/db');
 const redis = require('../config/redis');
 const { nanoid } = require('nanoid');
 
