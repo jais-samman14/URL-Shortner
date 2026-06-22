@@ -1,5 +1,5 @@
 const { promisePool : db} = require('../config/db');
-const redis = require('../config/redis');
+const {client : redis } = require('../config/redis');
 const { nanoid } = require('nanoid');
 
 // POST /api/shorten
@@ -19,7 +19,7 @@ const shortenUrl = async (req, res) => {
         );
 
         // ✅ Redis mein cache karo — 24 hours ke liye
-        await redis.setEx(short_code, 86400, original_url);
+        await redis.set(short_code, original_url, { EX: 86400 });
 
         return res.status(201).json({
             original_url,
