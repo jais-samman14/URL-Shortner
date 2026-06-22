@@ -3,7 +3,7 @@ const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 const urlRoutes = require('./routes/url');
-const { checkDbConnection } = require('./config/db');
+const { promisePool } = require('./config/db');
 const { connectRedis } = require('./config/redis');
 
 const app = express();

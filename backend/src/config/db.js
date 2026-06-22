@@ -7,17 +7,8 @@ const pool = mysql.createPool({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     port: process.env.DB_PORT,
-    waitForConnections: true,
-    connectionLimit: 10,
 });
 
 const promisePool = pool.promise();
-//check if the database connection is successful
-async function checkDbConnection() {
-    const connection = await promisePool.getConnection();
-    connection.release();
-    return true;
-}
 
-
-module.exports = pool.promise();
+module.exports = { promisePool };
